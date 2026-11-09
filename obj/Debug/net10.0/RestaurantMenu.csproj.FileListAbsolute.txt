@@ -1,0 +1,15 @@
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\bin\Debug\net10.0\RestaurantMenu.exe
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\bin\Debug\net10.0\RestaurantMenu.deps.json
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\bin\Debug\net10.0\RestaurantMenu.runtimeconfig.json
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\bin\Debug\net10.0\RestaurantMenu.dll
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\bin\Debug\net10.0\RestaurantMenu.pdb
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.AssemblyInfoInputs.cache
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.AssemblyInfo.cs
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.csproj.CoreCompileInputs.cache
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.dll
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\refint\RestaurantMenu.dll
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.pdb
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\RestaurantMenu.genruntimeconfig.cache
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\ref\RestaurantMenu.dll
+C:\Users\mauro\source\repos\MyStuff\RestaurantMenu\obj\Debug\net10.0\Restaura.81AAA8DE.Up2Date
