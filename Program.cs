@@ -10,7 +10,10 @@ namespace RestaurantMenu
         Mustard
     }
 
+    abstract class Food
+    {
 
+    }
     class Burger
     {
         private string name = "Burger";
@@ -33,14 +36,9 @@ namespace RestaurantMenu
             Price *= Quantity;
             foreach (CondimentsList c in Condiments)
             {
-                output += $"{c} ";
+                output += $"{c} | ";
             }
-            if (DoubleSize == false)
-            {
-                return $"{name}\nQuantity: {Quantity}\nPrice: {Price.ToString("C")}\nCondiments: {output}";
-            }
-            else
-                return $"{name}\nQuantity: {Quantity}\nPrice: {Price.ToString("C")}\nCondiments: {output}";
+                return $"\n--- Your order ---\n\n{name}\nQuantity: {Quantity}\nPrice: {Price.ToString("C")}\nCondiments: {output}";
         }
 
         public static Burger Create()
@@ -64,9 +62,9 @@ namespace RestaurantMenu
 
             switch (userInput)
             {
-                case 1: return simplePrice;
+                case 1: Console.WriteLine("\nYou've chosen simple size\n"); ; return simplePrice;
 
-                case 2: isDouble = true; return doublePrice;
+                case 2: isDouble = true; Console.WriteLine("\nYou've chosen double size\n"); return doublePrice;
 
                 default: return simplePrice;
             }
@@ -75,8 +73,19 @@ namespace RestaurantMenu
 
         private static int ChooseQuantity()
         {
-            Console.WriteLine("How many burgers would you like?");
-            return Program.ReadUserInput("QuantityMenu");
+            bool valid = false;
+            int quantity = 0;
+            while(!valid)
+            {
+                Console.Write("\nHow many burgers would you like?: ");
+                quantity = Program.ReadUserInput("QuantityMenu");
+                if (quantity <= 0) Console.WriteLine($"You can't buy zero\n");
+                else valid = true;
+            }
+
+            if (quantity == 1) Console.WriteLine($"You chose to buy a single burger\n");
+            else Console.WriteLine($"You chose to buy {quantity}\n");
+            return quantity;
         }
 
         static CondimentsList[] SelectCondiments()
@@ -101,9 +110,9 @@ namespace RestaurantMenu
 
                 switch (userInput)
                 {
-                    case 1: hasMayo = hasMayo == false ? true : false; break;
-                    case 2: hasKet = hasKet == false ? true : false; break;
-                    case 3: hasMus = hasMus == false ? true : false; break;
+                    case 1: hasMayo = hasMayo == false ? true : false; Console.Clear(); break;
+                    case 2: hasKet = hasKet == false ? true : false; Console.Clear(); break;
+                    case 3: hasMus = hasMus == false ? true : false; Console.Clear(); break;
                     case 4: isChoosing = false; break;
                     default: Console.WriteLine("Invalid option"); break;
                 }
@@ -148,89 +157,97 @@ namespace RestaurantMenu
             return sum;
         }
     }
+
+    class Hotdog
+    {
+
+    }
+
+
+    class Program
+    {
+        static void Main()
+        {
+            PrintMenu();
+
+            int userInput = ReadUserInput("Menu");
+
+            ProcessInput(userInput);
+
+            Console.ReadLine();
+        }
+
+        static void ProcessInput(int userInput)
+        {
+            bool valid = false;
+
+            while (!valid)
+            {
+                switch (userInput)
+                {
+                    case 1: BurgerChosen(); valid = true; break;
+                    //case 2: HotdogChosen(); break;
+                    //case 3: PizzaChosen(); break;
+                    default: Console.Clear(); Console.WriteLine("Invalid option\n"); PrintMenu(); userInput = ReadUserInput("Menu"); break;
+                }
+            }
+
+        }
+
+        static void PrintMenu()
+        {
+            Console.WriteLine("--- MENU ---\n");
+            Console.WriteLine("1. Burger");
+            Console.Write("\nChoose a food: ");
+        }
+
+        static void BurgerChosen()
+        {
+            Burger burger = Burger.Create();
+            Console.WriteLine(burger);
+        }
+
+        public static int ReadUserInput(string context)
+        {
+            int input = 0;
+            bool valid = false;
+            while (!valid && input == 0)
+            {
+                try
+                {
+                    input = Convert.ToInt16(Console.ReadLine());
+                    valid = true;
+                }
+                catch (FormatException)
+                {
+                    PrintError("Please, enter only numbers", context);
+                }
+                catch (OverflowException)
+                {
+                    PrintError("Number too big!", context);
+                }
+                catch (Exception e)
+                {
+                    PrintError(e.Message, context);
+                }
+            }
+            return input;
+        }
+
+        static void PrintError(string text, string context)
+        {
+            switch (context)
+            {
+                case "Menu": Console.Clear(); Console.WriteLine(text + "\n"); PrintMenu(); break;
+                case "SizeMenu": Console.WriteLine(text + "\n"); break;
+                default: Console.WriteLine(text + "\n"); break;
+            }
+
+
+
+        }
+    }
+
 }
 
 
-class Program
-{
-    static void Main()
-    {
-        PrintMenu();
-
-        int userInput = ReadUserInput("Menu");
-
-        ProcessInput(userInput);
-
-        Console.ReadLine();
-    }
-
-    static void ProcessInput(int userInput)
-    {
-        bool valid = false;
-
-        while(!valid)
-        {
-            switch (userInput)
-            {
-                case 1: BurgerChosen(); valid = true;  break;
-                //case 2: HotdogChosen(); break;
-                //case 3: PizzaChosen(); break;
-                default:  Console.Clear(); Console.WriteLine("Invalid option\n"); PrintMenu();  userInput = ReadUserInput("Menu"); break;
-            }
-        }
-
-    }
-
-    static void PrintMenu()
-    {
-        Console.WriteLine("--- MENU ---\n");
-        Console.WriteLine("1. Burger");
-        Console.Write("\nChoose a food: ");
-    }
-
-    static void BurgerChosen()
-    {
-        Burger burger = Burger.Create();
-        Console.WriteLine(burger);
-    }
-
-    public static int ReadUserInput(string context)
-    {
-        int input = 0;
-        bool valid = false;
-        while(!valid && input == 0)
-        {
-            try
-            {
-                input = Convert.ToInt16(Console.ReadLine());
-                valid = true;
-            }
-            catch(FormatException)
-            {
-                PrintError("Please, enter only numbers", context);
-            }
-            catch(OverflowException)
-            {
-                PrintError("Number too big!", context);
-            }
-            catch(Exception e)
-            {
-                PrintError(e.Message, context);
-            }
-        }
-        return input;
-    }
-
-    static void PrintError(string text, string context)
-    {
-        switch(context)
-        {
-            case "Menu": Console.Clear(); Console.WriteLine(text + "\n"); PrintMenu();break;
-            case "SizeMenu": Console.WriteLine(text + "\n"); break;
-            default: Console.WriteLine(text + "\n"); break;
-        }
-        
-        
-        
-    }
-}
