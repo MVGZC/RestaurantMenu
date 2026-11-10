@@ -1,5 +1,6 @@
 ﻿
 using RestaurantMenu;
+using System.Xml.Linq;
 
 namespace RestaurantMenu
 {
@@ -12,48 +13,45 @@ namespace RestaurantMenu
 
     abstract class Food
     {
-
-    }
-    class Burger
-    {
-        private string name = "Burger";
         public double Price { get; set; }
         public int Quantity { get; set; }
         public bool DoubleSize { get; set; } = false;
         public CondimentsList[] Condiments { get; set; }
 
-        public Burger(double price, int quantity, bool doubleSize, CondimentsList[] condiments)
+        public Food(double price, int quantity, bool doubleSize)
         {
             Price = price;
             Quantity = quantity;
             DoubleSize = doubleSize;
+        }
+
+        public Food(double price, int quantity, bool doubleSize, CondimentsList[] condiments) : this(price, quantity, doubleSize)
+        {
             Condiments = condiments;
         }
 
-        public override string ToString()
+
+        public static int ChooseQuantity(string name)
         {
-            string output = "";
-            Price *= Quantity;
-            foreach (CondimentsList c in Condiments)
+            bool valid = false;
+            int quantity = 0;
+            while (!valid)
             {
-                output += $"{c} | ";
+                Console.Write($"\nHow many {name}s would you like?: ");
+                quantity = Program.ReadUserInput("QuantityMenu");
+                if (quantity <= 0) Console.WriteLine($"You can't buy zero\n");
+                else valid = true;
             }
-                return $"\n--- Your order ---\n\n{name}\nQuantity: {Quantity}\nPrice: {Price.ToString("C")}\nCondiments: {output}";
+
+            if (quantity == 1) Console.WriteLine($"You chose to buy a single {name}\n");
+            else Console.WriteLine($"You chose to buy {quantity} {name}s\n");
+            return quantity;
         }
 
-        public static Burger Create()
-        {
-            int quantity = ChooseQuantity();
-            double price = ChooseSize(out bool isDouble);
-            CondimentsList[] condiments = SelectCondiments();
-
-            return new Burger(price, quantity, isDouble, condiments);
-        }
-        public static double ChooseSize(out bool isDouble)
+        public static double ChooseSize(out bool isDouble, double simplePrice, double doublePrice)
         {
             isDouble = false;
-            double simplePrice = 6.99;
-            double doublePrice = 11.99;
+
             Console.WriteLine($"1. Simple: {simplePrice.ToString("C")}");
             Console.WriteLine($"2. Double: {doublePrice.ToString("C")}");
             Console.Write("Choose size: ");
@@ -71,24 +69,7 @@ namespace RestaurantMenu
 
         }
 
-        private static int ChooseQuantity()
-        {
-            bool valid = false;
-            int quantity = 0;
-            while(!valid)
-            {
-                Console.Write("\nHow many burgers would you like?: ");
-                quantity = Program.ReadUserInput("QuantityMenu");
-                if (quantity <= 0) Console.WriteLine($"You can't buy zero\n");
-                else valid = true;
-            }
-
-            if (quantity == 1) Console.WriteLine($"You chose to buy a single burger\n");
-            else Console.WriteLine($"You chose to buy {quantity}\n");
-            return quantity;
-        }
-
-        static CondimentsList[] SelectCondiments()
+        public static CondimentsList[] SelectCondiments()
         {
             bool hasMayo = false;
             bool hasKet = false;
@@ -156,10 +137,125 @@ namespace RestaurantMenu
 
             return sum;
         }
+
+        public static string UpperFirst(string name)
+        {
+            char H = name[0];
+            H = char.ToUpper(H);
+            name = name.Remove(0, 1);
+            return H + name;
+        }
+
+        public static string DisplayOrder(bool isDouble, string name, int quantity, double price, string output)
+        {
+            if(isDouble)
+                return $"\n--- Your order ---\n\nItem: Double {name}\nQuantity: {quantity}\nPrice: {price.ToString("C")}\nCondiments: {output}";
+            else
+                return $"\n--- Your order ---\n\nItem: {name}\nQuantity: {quantity}\nPrice: {price.ToString("C")}\nCondiments: {output}";
+        }
+        public static string DisplayOrder(bool isDouble, string name, int quantity, double price)
+        {
+            if(isDouble)
+                return $"\n--- Your order ---\n\nItem: Double {name}\nQuantity: {quantity}\nPrice: {price.ToString("C")}";
+            else
+                return $"\n--- Your order ---\n\nItem: {name}\nQuantity: {quantity}\nPrice: {price.ToString("C")}";
+
+        }
+
     }
 
-    class Hotdog
+    class Burger : Food
     {
+        private static string name = "burger";
+        private static double simplePrice = 6.99;
+        private static double doublePrice = 11.99;
+
+
+        public Burger(double price, int quantity, bool doubleSize, CondimentsList[] condiments) : base(price, quantity, doubleSize, condiments)
+        {
+        }
+
+        public override string ToString()
+        {
+            string output = "";
+            Price *= Quantity;
+            foreach (CondimentsList c in Condiments)
+            {
+                output += $"{c} | ";
+            }
+            return DisplayOrder(DoubleSize, name, Quantity, Price, output);
+        }
+
+        public static Burger Create()
+        {
+            int quantity = ChooseQuantity(name);
+            double price = ChooseSize(out bool isDouble, simplePrice, doublePrice);
+            CondimentsList[] condiments = SelectCondiments();
+            name = UpperFirst(name);
+            return new Burger(price, quantity, isDouble, condiments);
+        }
+
+
+
+
+    }
+
+    class Hotdog : Food
+    {
+        private static string name = "hotdog";
+        private static double simplePrice = 2.99;
+        private static double doublePrice = 4.99;
+        public Hotdog(double price, int quantity, bool doubleSize, CondimentsList[] condiments) : base(price, quantity, doubleSize, condiments)
+        {
+        }
+
+        public static Hotdog Create()
+        {
+            int quantity = ChooseQuantity(name);
+            double price = ChooseSize(out bool isDouble, simplePrice, doublePrice);
+            CondimentsList[] condiments = SelectCondiments();
+
+            return new Hotdog(price, quantity, isDouble, condiments);
+        }
+
+        public override string ToString()
+        {
+            string output = "";
+            Price *= Quantity;
+            foreach (CondimentsList c in Condiments)
+            {
+                output += $"{c} | ";
+            }
+            name = UpperFirst(name);
+            return DisplayOrder(DoubleSize, name, Quantity, Price, output);
+        }
+    }
+
+    class Pizza : Food
+    {
+        private static string name = "pizza";
+        private static double simplePrice = 3.99;
+        private static double doublePrice = 7.99;
+
+        public Pizza(double price, int quantity, bool doubleSize) : base(price, quantity, doubleSize)
+        {
+
+        }
+
+        public static Pizza Create()
+        {
+            int quantity = ChooseQuantity(name);
+            double price = ChooseSize(out bool isDouble, simplePrice, doublePrice);
+
+            return new Pizza(price, quantity, isDouble);
+        }
+
+        public override string ToString()
+        {
+            Price *= Quantity;
+            name = UpperFirst(name);
+            return DisplayOrder( DoubleSize, name, Quantity, Price);
+        }
 
     }
 
@@ -186,8 +282,8 @@ namespace RestaurantMenu
                 switch (userInput)
                 {
                     case 1: BurgerChosen(); valid = true; break;
-                    //case 2: HotdogChosen(); break;
-                    //case 3: PizzaChosen(); break;
+                    case 2: HotdogChosen(); valid = true; break;
+                    case 3: PizzaChosen(); valid = true; break;
                     default: Console.Clear(); Console.WriteLine("Invalid option\n"); PrintMenu(); userInput = ReadUserInput("Menu"); break;
                 }
             }
@@ -198,6 +294,8 @@ namespace RestaurantMenu
         {
             Console.WriteLine("--- MENU ---\n");
             Console.WriteLine("1. Burger");
+            Console.WriteLine("2. Hotdog");
+            Console.WriteLine("3. Pizza");
             Console.Write("\nChoose a food: ");
         }
 
@@ -205,6 +303,17 @@ namespace RestaurantMenu
         {
             Burger burger = Burger.Create();
             Console.WriteLine(burger);
+        }
+
+        static void HotdogChosen()
+        {
+            Hotdog hotdog = Hotdog.Create();
+            Console.WriteLine(hotdog);
+        }
+        static void PizzaChosen()
+        {
+            Pizza pizza = Pizza.Create();
+            Console.WriteLine(pizza);
         }
 
         public static int ReadUserInput(string context)
